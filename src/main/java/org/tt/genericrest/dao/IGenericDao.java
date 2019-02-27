@@ -2,12 +2,12 @@ package org.tt.genericrest.dao;
 
 import java.util.List;
 
-public interface IGenericDao<T, ID> {
-	public T save(T model);
+public interface IGenericDao<T> {
+	public T save(T entity);
 
-	public T find(ID id);
+	public T find(Long id);
 
 	public List<T> find();
 
-	public Boolean delete(ID id);
+	public int delete(Long id);
 }

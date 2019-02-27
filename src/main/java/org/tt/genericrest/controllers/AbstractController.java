@@ -1,6 +1,5 @@
 package org.tt.genericrest.controllers;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,14 +13,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.tt.genericrest.service.IGenericService;
 
-public abstract class AbstractController<T, ID extends Serializable> {
+public abstract class AbstractController<T> {
 
     private Logger logger = LoggerFactory.getLogger(AbstractController.class);
     String[] s = {"A", "B"};
     
-    private IGenericService<T, ID> service;
+    private IGenericService<T> service;
 
-    public AbstractController(IGenericService<T, ID> service) {
+    public AbstractController(IGenericService<T> service) {
         this.service = service;
     }
 
@@ -32,16 +31,17 @@ public abstract class AbstractController<T, ID extends Serializable> {
     }
 
     @RequestMapping(value="id/{id}", method=RequestMethod.GET)
-    public @ResponseBody T search(@PathVariable("id") ID id) {
+    public @ResponseBody T search(@PathVariable("id") Long id) {
     	logger.info("Inside generic rest by id");
         return this.service.find(id);
     }
 
     @RequestMapping(value="id/{id}", method=RequestMethod.DELETE)
-    public @ResponseBody Map<String, Boolean> delete(@PathVariable("id") ID id) {
+    public @ResponseBody Map<String, Boolean> delete(@PathVariable("id") Long id) {
     	logger.info("Inside generic rest delete by id");
         Map<String, Boolean> res = new HashMap<String, Boolean>();
-    	res.put("response", this.service.delete(id));
+        this.service.delete(id);
+    	res.put("deleted", true);
     	return res;
     }
 

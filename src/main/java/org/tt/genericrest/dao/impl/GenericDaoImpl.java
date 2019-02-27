@@ -12,42 +12,43 @@ import org.tt.genericrest.dao.IGenericDao;
 import org.tt.genericrest.entity.AbstractEntity;
 
 @Repository
-
-public abstract class GenericDaoImpl<T extends AbstractEntity, ID extends Serializable> implements IGenericDao<T, ID> {
+public abstract class GenericDaoImpl<T extends AbstractEntity> implements IGenericDao<T> {
 
 	@Autowired
     private SessionFactory sessionFactory;
 	
-	protected Class<? extends T> daoType;
+	protected Class<? extends T> entityType;
 	
 	@SuppressWarnings("unchecked")
 	public GenericDaoImpl() {
         Type t = getClass().getGenericSuperclass();
         ParameterizedType pt = (ParameterizedType) t;
-        daoType = (Class<T>) pt.getActualTypeArguments()[0];
+        entityType = (Class<T>) pt.getActualTypeArguments()[0];
     }
 
-	@SuppressWarnings("unchecked")
 	public T save(T model) {
 		if (model.getId() == null) {
-			ID id = (ID) sessionFactory.getCurrentSession().save(model);
+			Long id = (Long) sessionFactory.getCurrentSession().save(model);
 			model.setId(id);
+		} else {
+			sessionFactory.getCurrentSession().update(model);
 		}
-		return null;
+		return model;
 	}
 
-	public T find(ID id) {
-		// TODO Auto-generated method stub
-		return null;
+	@SuppressWarnings("unchecked")
+	public T find(Long id) {
+		return (T) sessionFactory.getCurrentSession().get(entityType, (Serializable) id);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<T> find() {
-		// TODO Auto-generated method stub
-		return null;
+		return sessionFactory.getCurrentSession().createCriteria(entityType).list();
 	}
 
-	public Boolean delete(ID id) {
-		// TODO Auto-generated method stub
-		return null;
+	public int delete(Long id) {
+		return sessionFactory.getCurrentSession()
+			.createQuery("delete from " + entityType.getSimpleName() + " where id = " + id)
+			.executeUpdate();
 	}
 }

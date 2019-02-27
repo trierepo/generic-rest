@@ -2,27 +2,35 @@ package org.tt.genericrest.service.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.tt.genericrest.dao.IGenericDao;
 import org.tt.genericrest.service.IGenericService;
 
-public class GenericServiceImpl<T, ID> implements IGenericService<T, ID>{
+@Service
+@Transactional(propagation = Propagation.REQUIRED)
+public abstract class GenericServiceImpl<T> implements IGenericService<T> {
 
-	public T save(T model) {
-		// TODO Auto-generated method stub
-		return null;
+	private IGenericDao<T> genericDao;
+
+	public GenericServiceImpl(IGenericDao<T> genericDao) {
+		this.genericDao = genericDao;
 	}
 
-	public T find(ID id) {
-		// TODO Auto-generated method stub
-		return null;
+	public T save(T model) {
+		return genericDao.save(model);
+	}
+
+	public T find(Long id) {
+		return genericDao.find(id);
 	}
 
 	public List<T> find() {
-		// TODO Auto-generated method stub
-		return null;
+		return genericDao.find();
 	}
 
-	public Boolean delete(ID id) {
-		// TODO Auto-generated method stub
-		return null;
+	public int delete(Long id) {
+		return genericDao.delete(id);
 	}
 }

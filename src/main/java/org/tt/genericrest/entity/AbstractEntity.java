@@ -4,15 +4,14 @@ public abstract class AbstractEntity {
 	protected Long id;
 	protected String status;
 
-	public Long getId() {
-		return id;
-	}
+	public abstract Long getId();
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getStatus() {
-		return status;
-	}
+
+	public abstract String getStatus();
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
